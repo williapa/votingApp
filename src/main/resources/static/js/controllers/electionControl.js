@@ -3,15 +3,12 @@ angular.module('voting')
 			
 		$scope.elections = [];
 
-		$scope.electionData = false;
-
 		$http({
 			url: '/api/election/',
 			method: 'GET',			
 		}).then(function(response){
 			if(response.data) {
 				$scope.elections = response.data;
-				$scope.electionData = true;
 				for(var i = 0; i < $scope.elections.length; i++){
 					var e = $scope.elections[i];
 					var startDate = new Date(e.startDate);
@@ -27,17 +24,30 @@ angular.module('voting')
 		});
 
 		$scope.goToElection = function(id) {
-		
-			//proably a $location with some passed params
+
+			// if we are signed in, we will go to our ballot. If we aren't we will see the election results 
+			var vwt = localStorage.getItem("vwt");
+
+			if(vwt !== null) { 
+
+				regionId = JSON.parse(vwt).regionId;
+
+				return $location.path("/ballot/"+regionId);
+
+			} else {
+
+				return $location.path("/results");
+			}
 		
 		};
 
 		$scope.logout = function () {
 			localStorage.removeItem("vwt");
+
+			setTimeout(function() {
+				$location.path("/");
+			}, 250);
+
 		};
 
-		$scope.goHome = function () {
-			$location.path("/");
-		};
-
-	});
+});

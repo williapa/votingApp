@@ -3,6 +3,7 @@ angular.module('voting')
 			
 		$scope.questions = [];
 		$scope.ballotId = $routeParams.id;
+		$scope.answers ={};
 
 		//build questionData
 		$http({
@@ -10,7 +11,7 @@ angular.module('voting')
 			method: 'GET',
 		}).then(function(response) {
 			if(response.data){
-				console.log("questions for ballot id "+ $scope.balotId  + ": ", response.data);
+				console.log("questions for ballot id "+ $scope.ballotId  + ": ", response.data);
 				$scope.questions = response.data;
 			} else {
 				console.log("no questions for this ballot yet. ");
@@ -18,12 +19,6 @@ angular.module('voting')
 		}, function(error){
 			console.log("there was a server error?", error);
 		});
-
-		$scope.goToElection = function(id) {
-		
-			//proably a $location with some passed params
-		
-		};
 
 		$scope.logout = function () {
 			localStorage.removeItem("vwt");

@@ -2,6 +2,7 @@ package com.voting.service;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
@@ -32,26 +33,24 @@ public class RegionService {
 	@GET
 	public List<Region> getAll() {
 		
-		List<Region> regions = regionRepo.findAll();
+		return regionRepo.findAll();
 		
-		if(regions.size() < 5) {
+	}
+	
+	@PostConstruct
+	public void saveRegions() {
+		
+		String[] regionNames = {"Southwest", "Northwest", "Southeast", "Northeast", "Midwest"};
+		
+		for(int i = 0; i < regionNames.length; i++) {
 			
-			String[] regionNames = {"Southwest", "Northwest", "Southeast", "Northeast", "Midwest"};
+			Region newRegion = new Region();
 			
-			for(int i = 0; i < regionNames.length; i++) {
-				
-				Region newRegion = new Region();
-				
-				newRegion.setRegion(regionNames[i]);
-				
-				regionRepo.save(newRegion);
-				
-			}
+			newRegion.setRegion(regionNames[i]);
 			
-			regions = regionRepo.findAll();
+			regionRepo.save(newRegion);
+			
 		}
-		
-		return regions;
 	}
 
 }

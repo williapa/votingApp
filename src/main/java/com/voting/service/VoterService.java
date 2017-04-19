@@ -2,6 +2,9 @@ package com.voting.service;
 
 import java.util.List;
 
+
+import javax.annotation.PostConstruct;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -47,9 +50,13 @@ public class VoterService{
 	@POST
 	@Path("/signup")
 	public Voter registerVoter(Voter voter) {
+		
+		System.out.println("name: "+voter.getName());
+		System.out.println("regionId: "+ voter.getRegionId());
 
 		boolean success = saveVoter(voter.getName(), voter.getPassword(), voter.getRegionId());
 		
+		System.out.println("success? "+ success);
 		if(success) {
 
 			Voter v = voterRepo.findByName(voter.getName());
@@ -67,13 +74,13 @@ public class VoterService{
 	@Path("/login")
 	public Voter login(Voter v) {
 		
-		String name= v.getName();
+		String name = v.getName();
 		String password = v.getPassword();
 		
 		Voter tryingToSignIn = voterRepo.findByName(name);
 		
-		if ( tryingToSignIn != null) {
-			
+		if (tryingToSignIn == null) {
+		
 			return null;
 			
 		} else {
@@ -96,29 +103,27 @@ public class VoterService{
 	@GET
 	public List<Voter> getAllVoters() {
 		
-		List<Voter> voters = voterRepo.findAll();
+		return voterRepo.findAll();
 		
-		if(voters.isEmpty()) {
-			
-			saveVoter("Paul Williams", "password", 1L);
-			saveVoter("Chip Reese", "password", 2L);
-			saveVoter("Mike Caro", "password", 3L);
-			saveVoter("Phil Ivey", "password", 4L);
-			saveVoter("Crocodile Dundee", "password", 5L);
-			saveVoter("Leo Pena", "password", 1L);
-			saveVoter("Ronald Grump", "password", 2L);
-			saveVoter("Todd Glass", "password", 3L);
-			saveVoter("Scott Aukerman", "password", 4L);
-			saveVoter("Armie Hammer", "password", 5L);
-			saveVoter("Jeff Stern", "password", 1L);
-			saveVoter("Quentin Tarantino", "password", 2L);
-			saveVoter("Chad LeFountain", "password", 3L);
-			saveVoter("Jon Glenn", "password", 4L);
-			saveVoter("Roger Moore", "password", 5L);
-			voters = voterRepo.findAll();
-		}
-		
-		return voters;
+	}
+	
+	@PostConstruct
+	public void createVoters() {
+		saveVoter("Paul Williams", "password", 1L);
+		saveVoter("Chip Reese", "password", 2L);
+		saveVoter("Mike Caro", "password", 3L);
+		saveVoter("Phil Ivey", "password", 4L);
+		saveVoter("Crocodile Dundee", "password", 5L);
+		saveVoter("Leo Pena", "password", 1L);
+		saveVoter("Ronald Grump", "password", 2L);
+		saveVoter("Todd Glass", "password", 3L);
+		saveVoter("Scott Aukerman", "password", 4L);
+		saveVoter("Armie Hammer", "password", 5L);
+		saveVoter("Jeff Stern", "password", 1L);
+		saveVoter("Quentin Tarantino", "password", 2L);
+		saveVoter("Chad LeFountain", "password", 3L);
+		saveVoter("Jon Glenn", "password", 4L);
+		saveVoter("Roger Moore", "password", 5L);
 	}
 	
 	public boolean saveVoter(String name, String password, Long regionId) {
@@ -139,6 +144,8 @@ public class VoterService{
 		return false;
 		
 	}
+	
+	
 
 
 }

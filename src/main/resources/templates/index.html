@@ -12,71 +12,77 @@
 	<script type="text/javascript" src="js/libs/angular-route.js"></script>
 	<script type="text/javascript" src="js/app.js"></script>
 	<script type="text/javascript" src="js/controllers/homeControl.js"></script>
+	<script type="text/javascript" src="js/controllers/electionControl.js"></script>
+	<script type="text/javascript" src="js/controllers/ballotControl.js"></script>
+		<script type="text/javascript" src="js/controllers/resultsControl.js"></script>
 	<body ng-app="voting">
 	<ng-view />
 	<script type="text/ng-template" id="home.html">
-		<h1> Vote Online </h1>
-		<button ng-click="switch()"> {{buttonMsg}} </button>
-		<p class="error" ng-model="error">{{error}} </p>
-		<div ng-show="signupForm">
-			<h2> Register to Vote </h2>
-			<label> Full Name </label> <input type="text" ng-model="signupName"/>
-			<label> Password </label> <input type="password" ng-model="signupPassword"/>
-			<label> Region Id </label> <input type="range" min="1" max="5" ng-model="signupRegionId"/>
-			<button ng-click="signUp()"> sign up </button>
+		<div class="header">
+			<h1> Vote Online </h1>
+			<button ng-click="toggle()"> <span ng-class="{hide: reg}"> log in </span> <span ng-class="{hide: !reg}"> register </span> </button>
 		</div>
-		<div ng-show="!signupForm">
+		<div ng-class="{hide: reg}">
+			<h2> Register to Vote </h2>
+			<label> Full Name </label> <input type="text" ng-model="newVoter.name"/>
+			<label> Password </label> <input type="password" ng-model="newVoter.password"/>
+			<label> Region </label>
+			<select ng-model="newVoter.region" ng-options="x for x in regions"></select>
+			<button ng-click="register()"> sign up </button>
+		</div> 
+		<div ng-class="{hide: !reg}">
 			<h2> Log In </h2> 
-			<label> Full Name </label> <input type="text" ng-model="loginName"/>
-			<label> Password </label> <input type="password" ng-model="loginPassword"/>
+			<label> Full Name </label> <input type="text" ng-model="voter.name"/>
+			<label> Password </label> <input type="password" ng-model="voter.password"/>
 			<button ng-click="login()"> log in </button>
 		</div>
-		<button ng-click="logout()"></button>
 	</script>
-	<script type="text/ng-template" id="elections.html">
+	<script type="text/ng-template" id="election.html">
 		<h1> Elections </h1>
 		<p class="error" ng-model="error">{{error}} </p>
-		<table ng-show="electionData">
+		<table>
 			<tr>
 			    <th>ID</th>
 			    <th>Start Date</th>
 			    <th>End Date</th>
 			</tr>
-			<tr ng-repeat="e in elections">
-			    <td> <a ng-click="goToElection(e.id)">{{e.id}}</a> </td>
+			<tr ng-click="goToElection(e.id)" ng-repeat="e in elections">
+			    <td> {{e.id}} </td>
 			    <td> {{e.startDate}} </td>
 			    <td> {{e.endDate}} </td>
 			</tr>
 		</table>
-		<p ng-show="!electionData"> no elections yet. </p>
-		<button ng-click="logout()"></button>
+		<button ng-click="logout()"> logout </button>
 	</script>
 	<script type="text/ng-template" id="ballot.html">
 		<h1> Ballot #{{ballotId}} </h1>
-		<p class="error" ng-model="error">{{error}} </p>
-		<div class="ballot" ng-show="questionData">
+		<div class="ballot">
 			<div class="question" ng-repeat="q in questions">
 				<h2>#{{q.q.id + ". " + q.q.body }} </h2>
 				<p> {{q.q.type }} </p>
 				<ol>
 					<li ng-repeat="c in q.candidates">
-					<input type="radio" name="c.id" ng-show="q.q.type === 'yes or no'" ng-value="{{c.id}}"/><label ng-show="q.q.type === 'yes or no'">{{c.body}}</label>
-					<input type="checkbox" ng-show="q.q.type === 'pick two'" ng-value="{{c.id}}"/><label ng-show="q.q.type==='pick two'">{{c.body}}</label>
-					<input type="text" ng-show="q.q.type === 'instant runoff'"/><label ng-show="q.q.type === 'instant runoff'"> {{c.body}} </label>
+					<input type="radio" name="c.id" ng-show="q.q.type === 'yes or no'" /><label ng-show="q.q.type === 'yes or no'">{{c.body}}</label>
+					<input type="checkbox" ng-show="q.q.type === 'pick two'"/><label ng-show="q.q.type==='pick two'">{{c.body}}</label>
+					<select ng-model="answers[c.id]" ng-options="q.candidates.indexOf(x) for x in q.candidates" ng-show="q.q.type === 'instant runoff'"/><label ng-show="q.q.type === 'instant runoff'"> {{c.body}} </label>
 					</li>
 					<li ng-if="q.q.type === 'pick two'">
 						<input type="checkbox"/><input class="writein" type="text" value="write-in"/>
 					</li>
 					<li ng-if="q.q.type === 'instant runoff'">
-						<input type="text"/><input class="writein" type="text" value="write-in"/>
+						<select ng-model="answers[c.id]" ng-options="q.candidates.indexOf(x) for x in q.candidates"/><input class="writein" type="text" value="write-in"/>
 					</li>
 				</ol>
 			</div>
-			<button ng-click="submitVote()">Submit your ballot </button>
+			<button>Submit your ballot </button>
 			<p> You can resubmit your vote at any point before the election close date. </p>
 		</div>
 	</script>
 	<script type="text/ng-template" id="results.html">
+		<div>
+			<h1> Results </h1>
+			<button ng-click="logout()" ng-class="{hide: !vwt}"> Log out </button>
+		</div>
 	</script>
 	</body>
 	</html>

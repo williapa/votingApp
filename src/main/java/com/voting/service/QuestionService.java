@@ -2,6 +2,7 @@ package com.voting.service;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -35,20 +36,8 @@ public class QuestionService {
 	@GET
 	public List<Question> getAll() {
 		
-		List<Question> questions = questionRepo.findAll();
-		
-		if(questions.size() < 8) {
-			saveQuestion("Commnder in Cream", "instant runoff");
-			saveQuestion("Chief Dairy Queen", "yes or no");
-			saveQuestion("State Rep. District M&M", "pick two");
-			saveQuestion("Make Vanilla best flavor", "yes or no");
-			saveQuestion("Make Chocolate best flavor", "yes or no");
-			saveQuestion("Make Mint the Best Flavor", "yes or no");
-			saveQuestion("Make Sprinkles an Illegal Flavor", "yes or no");
-			saveQuestion("Make coconut an illegal topping", "yes or no");
-		}
-		
 		return questionRepo.findAll();
+		
 	}
 	
 	@POST
@@ -82,5 +71,18 @@ public class QuestionService {
 		}
 
 	}
+	
+	@PostConstruct
+	public void saveQuestions() {
+		saveQuestion("Commnder in Cream", "instant runoff");
+		saveQuestion("Chief Dairy Queen", "yes or no");
+		saveQuestion("State Rep. District M&M", "pick two");
+		saveQuestion("Make Vanilla best flavor", "yes or no");
+		saveQuestion("Make Chocolate best flavor", "yes or no");
+		saveQuestion("Make Mint the Best Flavor", "yes or no");
+		saveQuestion("Make Sprinkles an Illegal Flavor", "yes or no");
+		saveQuestion("Make coconut an illegal topping", "yes or no");
+	}
+	
 	
 }

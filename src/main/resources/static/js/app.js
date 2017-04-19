@@ -1,6 +1,9 @@
-angular.module('voting', ['ngRoute']).config(function($routeProvider){
+angular.module('voting', ['ngRoute']).config(function($routeProvider,$locationProvider){
 	'use strict';
-	//login & signup, not protected
+
+	// get rid of angular's obnoxious added window.location stuff
+    $locationProvider.hashPrefix('');
+
 	var homeConfig = {
 		controller: 'homeControl',
 		templateUrl: 'home.html',
@@ -8,10 +11,11 @@ angular.module('voting', ['ngRoute']).config(function($routeProvider){
 			store: function($location) {
 				//voting web token
 				var vwt = localStorage.getItem("vwt");
+				console.log("vwt", vwt);
 				if(vwt) {
 					// if we already have one, we are already logged in & can go to 
 					// the election page
-					return $location.path("/election");
+					return $location.path("/elections");
 				}
 			}
 		}
@@ -20,17 +24,6 @@ angular.module('voting', ['ngRoute']).config(function($routeProvider){
 	var electionConfig = {
 		controller: 'electionControl',
 		templateUrl: 'election.html',
-		resolve: {
-			store: function($location) {
-			var vwt = localStorage.getItem("vwt");
-				if(vwt) {
-					// we good
-				} else {
-					// need to sign in
-					return $location.path("/");
-				}
-			}
-		}
 	};
 	//view your ballot for an election. protected to submit
 	var ballotConfig = {
@@ -53,25 +46,20 @@ angular.module('voting', ['ngRoute']).config(function($routeProvider){
 	var resultsConfig = {
 		controller: 'resultsControl',
 		templateUrl: 'results.html',
-		resolve: {
-			store: function($location) {
-				var vwt = localStorage.getItem("vwt");
-			}
-		}
 	};
 
 	$routeProvider
 		.when('/', homeConfig)
 		.when('/elections', electionConfig)
 		.when('/ballot/:id', ballotConfig)
-		.when('/results', resultsConfig)
-		.otherwise({
-			redirectTo: "/"
-		});
+		.when('/results', resultsConfig);
 
 }).run(function($http) {
 	//attach the voting web token to every header so if they are logged in, we know!
-	$http.defaults.headers.common['Auth-Token'] = localStorage.getItem("vwt");
-});
+	var vwt = JSON.parse(localStorage.getItem("vwt"));
 
-// move these to controller scripts
+	console.log("attaching password to header if there", vwt);
+
+	if(vwt !== null && vwt.password) $http.defaults.headers.common['Auth-Token'] = vwt.password;
+
+});

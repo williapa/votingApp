@@ -2,6 +2,7 @@ package com.voting.service;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -40,30 +41,6 @@ public class CandidateService {
 	
 	@GET
 	public List<Candidate> getAll() {
-		
-		List<Candidate> candidates = candidateRepo.findAll();
-		
-		if(candidates.size() < 18) {
-			saveCandidate(1L, "Reese Withoutaspoon / Cherry Garcia - Democrat");
-			saveCandidate(1L, "Choco Chip Dough / Carmello Coney - Republican");
-			saveCandidate(1L, "Magic Brownie / Phish Food - Independent");
-			saveCandidate(2L, "Yes - retain Justice Mint C. Chip");
-			saveCandidate(2L, "No - do not retain Justice Mint C. Chip");
-			saveCandidate(3L, "P. Nut Butter (Republican)");
-			saveCandidate(3L, "Marsh Mallow (Democrat)");
-			saveCandidate(3L, "Cream C. Kol (Independent)");
-			saveCandidate(4L, "Yes - for vanilla");
-			saveCandidate(4L, "No - against vanilla");
-			saveCandidate(5L, "Yes - for chocolate");
-			saveCandidate(5L, "No - against chocolate");
-			saveCandidate(6L, "Yes - for mint");
-			saveCandidate(6L, "No - against mint");
-			saveCandidate(7L, "Yes - Sprinkles illegal");
-			saveCandidate(7L, "No - Sprinkles legal");
-			saveCandidate(8L, "Yes - Coconut illegal");
-			saveCandidate(8L, "No - Coconut legal");
-		}
-		
 		return candidateRepo.findAll();
 	}
 	
@@ -93,6 +70,28 @@ public class CandidateService {
 		
 		return candidateRepo.save(candidate);
 		
+	}
+	
+	@PostConstruct
+	public void saveCandidates() {
+		saveCandidate(1L, "Reese Withoutaspoon / Cherry Garcia - Democrat");
+		saveCandidate(1L, "Choco Chip Dough / Carmello Coney - Republican");
+		saveCandidate(1L, "Magic Brownie / Phish Food - Independent");
+		saveCandidate(2L, "Yes - retain Justice Mint C. Chip");
+		saveCandidate(2L, "No - do not retain Justice Mint C. Chip");
+		saveCandidate(3L, "P. Nut Butter (Republican)");
+		saveCandidate(3L, "Marsh Mallow (Democrat)");
+		saveCandidate(3L, "Cream C. Kol (Independent)");
+		saveCandidate(4L, "Yes - for vanilla");
+		saveCandidate(4L, "No - against vanilla");
+		saveCandidate(5L, "Yes - for chocolate");
+		saveCandidate(5L, "No - against chocolate");
+		saveCandidate(6L, "Yes - for mint");
+		saveCandidate(6L, "No - against mint");
+		saveCandidate(7L, "Yes - Sprinkles illegal");
+		saveCandidate(7L, "No - Sprinkles legal");
+		saveCandidate(8L, "Yes - Coconut illegal");
+		saveCandidate(8L, "No - Coconut legal");
 	}
 	
 	public void saveCandidate(Long questionId, String body) {

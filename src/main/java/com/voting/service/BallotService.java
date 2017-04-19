@@ -2,6 +2,7 @@ package com.voting.service;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -48,17 +49,7 @@ public class BallotService {
 	
 	@GET
 	public List<Ballot> getAll() {
-
-		List<Ballot> ballots = ballotRepo.findAll();		
-			
-		if(ballots.isEmpty()) {
-				
-			saveBallots();
-				
-		}
-		
 		return ballotRepo.findAll();
-		
 	}
 	
 	@GET
@@ -89,21 +80,22 @@ public class BallotService {
 		
 	}
 	
+	@PostConstruct
 	public void saveBallots() {
 		
-		List<Region> regions = regionRepo.findAll();
+		Long[] regionIds = {1L, 2L, 3L, 4L, 5L};
 		
-		for(Region r: regions) {
-			Long regionId = r.getId();
-			List<Election> elections = electionRepo.findAll();
-			for(Election e: elections) {
-				Long electionId = e.getId();
-				Ballot newBallot = new Ballot();
-				newBallot.setElectionId(electionId);
-				newBallot.setRegionId(regionId);
-				ballotRepo.save(newBallot);	
-			}
+		for(int i = 0; i < regionIds.length; i++) {
+			
+			Ballot newBallot = new Ballot();
+			
+			newBallot.setElectionId(1L);
+			newBallot.setRegionId(regionIds[i]);
+			
+			ballotRepo.save(newBallot);
+			
 		}
+		
 	}
 
 }

@@ -3,6 +3,7 @@ package com.voting.service;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -43,29 +44,27 @@ public class ElectionService{
 	@GET
 	public List<Election> getAllElections() {
 		
-		List<Election> elections = electionRepo.findAll();
+		return electionRepo.findAll();
 		
-		if(elections.size() < 1) {
-			Election only = new Election();
-			SimpleDateFormat dateformat = new SimpleDateFormat("dd/MM/yyyy");
+	}
+	
+	@PostConstruct
+	public void createElection() {
+		
+		Election only = new Election();
+		SimpleDateFormat dateformat = new SimpleDateFormat("dd/MM/yyyy");
+		
+		try {
 			
-			try {
-				
-				Date startDate = dateformat.parse("12/04/2017");
-				Date endDate = dateformat.parse("19/04/2017");
-				only.setStartDate(startDate);
-				only.setEndDate(endDate);
-				electionRepo.save(only);
-			
-			} catch (ParseException e) {
-	            e.printStackTrace();
-			}
-			
-			elections = electionRepo.findAll();
-
+			Date startDate = dateformat.parse("12/04/2017");
+			Date endDate = dateformat.parse("19/04/2017");
+			only.setStartDate(startDate);
+			only.setEndDate(endDate);
+			electionRepo.save(only);
+		
+		} catch (ParseException e) {
+            e.printStackTrace();
 		}
-		
-		return elections;
 		
 	}
 	

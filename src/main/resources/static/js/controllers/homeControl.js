@@ -1,25 +1,21 @@
 angular.module('voting')
-	.controller('homeControl', function homeControl($http, $scope, $routeParams, $filter, $location) {
+	.controller('homeControl', function homeControl($http, $scope, $routeParams, $location) {
 
-		$scope.signUpForm = false;
+		$scope.regions = ["Northeast", "Northwest", "Southeast", "Southwest", "Midwest"];
+		$scope.newVoter = {name: "", password: "", region: "Northeast"};
+		$scope.voter = {name: "", password: ""};
+		$scope.reg = false;
 
-		$scope.switch = function() {
-
-			if($scope.signUpForm) {
-			  $scope.signUpForm = false;
-			}
-			else {
-			  $scope.signUpForm = true;
-			}
-
-		};
+		$scope.toggle = function() {
+			$scope.reg = !$scope.reg;
+		}
 
 		$scope.login = function() {
 		
 			var voter = {};
 			
-			voter["name"] = $scope.loginName;
-			voter["password"] = $scope.loginPassword;
+			voter["name"] = $scope.voter.name;
+			voter["password"] = $scope.voter.password;
 			
 			$http({
 				url: '/api/voter/login',
@@ -28,8 +24,8 @@ angular.module('voting')
 			}).then(function(response) {
 				if(response.data) {
 					console.log("success: ", response.data);
-					localStorage.setItem("vwt", response.data);
-					$location.path("/elections");
+					localStorage.setItem("vwt", JSON.stringify(response.data));
+					
 				} else {
 					console.log("name/password don't match.");
 					$scope.error = "name and password don't match.";
@@ -37,25 +33,29 @@ angular.module('voting')
 			}, function(error) {
 				console.log("there was an error: ", error);
 				$scope.error = error;
+			}).finally(function() {
+				if(localStorage.getItem("vwt") !== null) $location.path("/elections");
 			});
 			
 		};
 
 		$scope.register = function() {
 
-			var voter = {};                                                                                     
-			voter["name"] = $scope.signupName;
-			voter["password"] = $scope.signupPassword;
-			voter["regionId"] = $scope.signupRegionId;
+			var voter = {};        
+
+			console.log("region id: ", $scope.regions.indexOf($scope.newVoter.region));                                                                             
+			voter["name"] = $scope.newVoter.name;
+			voter["password"] = $scope.newVoter.password;
+			voter["regionId"] = $scope.regions.indexOf($scope.newVoter.region)+1;
 
 			$http({
-				url:'/api/voter',
+				url:'/api/voter/signup',
 				method:'POST',
 				data: voter,
 			}).then(function(response) {
 				if(response.data) {
 					console.log("success: ", response.data);
-					localStorage.setItem("vwt", response.data);
+					localStorage.setItem("vwt", JSON.stringify(response.data));
 					$location.path("/elections");
 				} else {
 					$scope.error = "Name is already taken. ";
@@ -65,14 +65,6 @@ angular.module('voting')
 				$scope.error = error;
 			});
 
-		};
-
-		$scope.logout = function () {
-			localStorage.removeItem("vwt");
-		};
-
-		$scope.goHome = function () {
-			$location.path("/");
 		};
 
 	});

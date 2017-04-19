@@ -3,6 +3,7 @@ package com.voting.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -47,34 +48,7 @@ public class BallotQuestionService {
 	
 	@GET
 	public List<BallotQuestion> getAll() {
-		
-		List<BallotQuestion> bqs = ballotQuestionRepo.findAll();
-		
-		if(bqs.isEmpty()) {
-			saveBallotQuestion(1L, 1L);
-			saveBallotQuestion(1L, 2L);
-			saveBallotQuestion(1L, 3L);
-			saveBallotQuestion(1L, 4L);
-			saveBallotQuestion(2L, 1L);
-			saveBallotQuestion(2L, 2L);
-			saveBallotQuestion(2L, 3L);
-			saveBallotQuestion(2L, 5L);
-			saveBallotQuestion(3L, 1L);
-			saveBallotQuestion(3L, 2L);
-			saveBallotQuestion(3L, 3L);
-			saveBallotQuestion(3L, 6L);
-			saveBallotQuestion(4L, 1L);
-			saveBallotQuestion(4L, 2L);
-			saveBallotQuestion(4L, 3L);
-			saveBallotQuestion(4L, 7L);
-			saveBallotQuestion(5L, 1L);
-			saveBallotQuestion(5L, 2L);
-			saveBallotQuestion(5L, 3L);
-			saveBallotQuestion(5L, 8L);
-		}
-		
 		return ballotQuestionRepo.findAll();
-		
 	}
 	
 	@GET
@@ -101,7 +75,6 @@ public class BallotQuestionService {
 	@POST
 	public BallotQuestion addQuestionToBallot(BallotQuestion ballotQuestion) {
 		
-		
 		List<BallotQuestion> questions = ballotQuestionRepo.findByBallotId(ballotQuestion.getBallotId());
 		
 		boolean save = true;
@@ -119,15 +92,35 @@ public class BallotQuestionService {
 		return null;
 	}
 	
+	@PostConstruct
+	public void saveBallotQuestions() {
+		saveBallotQuestion(1L, 1L);
+		saveBallotQuestion(1L, 2L);
+		saveBallotQuestion(1L, 3L);
+		saveBallotQuestion(1L, 4L);
+		saveBallotQuestion(2L, 1L);
+		saveBallotQuestion(2L, 2L);
+		saveBallotQuestion(2L, 3L);
+		saveBallotQuestion(2L, 5L);
+		saveBallotQuestion(3L, 1L);
+		saveBallotQuestion(3L, 2L);
+		saveBallotQuestion(3L, 3L);
+		saveBallotQuestion(3L, 6L);
+		saveBallotQuestion(4L, 1L);
+		saveBallotQuestion(4L, 2L);
+		saveBallotQuestion(4L, 3L);
+		saveBallotQuestion(4L, 7L);
+		saveBallotQuestion(5L, 1L);
+		saveBallotQuestion(5L, 2L);
+		saveBallotQuestion(5L, 3L);
+		saveBallotQuestion(5L, 8L);
+	}
+	
 	public void saveBallotQuestion(Long ballotId, Long questionId) {
-		
 		BallotQuestion bq = new BallotQuestion();
 		bq.setBallotId(ballotId);
 		bq.setQuestionId(questionId);
-		ballotQuestionRepo.save(bq);
-		
-		
-		
+		ballotQuestionRepo.save(bq);		
 	}
 	
 
