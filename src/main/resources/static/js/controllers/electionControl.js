@@ -36,17 +36,24 @@ angular.module('voting')
 
 			} else {
 
-				return $location.path("/results");
+				return $location.path("/results/1");
 			}
 		
 		};
 
 		$scope.logout = function () {
-			localStorage.removeItem("vwt");
 
-			setTimeout(function() {
-				$location.path("/");
-			}, 250);
+			var vwt = localStorage.getItem("vwt");
+
+			while(vwt !== null) {
+
+				localStorage.removeItem("vwt");
+
+				vwt = localStorage.getItem("vwt");
+
+			}
+
+			$location.path("/");
 
 		};
 

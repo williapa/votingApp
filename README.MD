@@ -79,15 +79,12 @@ to be able to cast a ballot (meaning: post your list of votes to the votes table
 shows the number of votes for each poll question, regardless of region. also has a link for every table's "get" and "create", use the current index.html 
 as reference for /results but requiring admin jwt. 
 
-
-
 todo: enforce vote limits with ng-change or and/or on server
 
 todo: protect API routes
 
 todo: create results api that returns # of votes per candidate for each question in that electino.
 
-todo: make d3 visualization for questions
-
 todo: figure out how to do runoff question. 
 
+todo: show logged in name, links for results

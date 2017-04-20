@@ -15,11 +15,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
 import com.voting.repository.BallotQuestionRepository;
+import com.voting.repository.BallotRepository;
+import com.voting.repository.QuestionRepository;
 import com.voting.repository.CandidateRepository;
 import com.voting.repository.VoteRepository;
-import com.voting.domain.BallotQuestion;
-import com.voting.domain.Candidate;
-import com.voting.domain.Vote;
+import com.voting.domain.*;
 
 @Component
 @Controller
@@ -31,7 +31,17 @@ public class VoteService {
 	private VoteRepository voteRepo;
 	private CandidateRepository candidateRepo;
 	private BallotQuestionRepository ballotQuestionRepo;
+	private BallotRepository ballotRepo;
+	private QuestionRepository questionRepo;
 
+	@Autowired
+	public void setQuestionDao(final QuestionRepository repo) {
+		this.questionRepo = repo;
+	}
+	@Autowired
+	public void setBallotDao(final BallotRepository repo) {
+		this.ballotRepo = repo;
+	}
 	@Autowired
 	public void setVoteDao(final VoteRepository repo){
 		this.voteRepo = repo;
@@ -41,19 +51,53 @@ public class VoteService {
 	public void setCandidateDao(final CandidateRepository repo){
 		this.candidateRepo = repo;
 	}
-	
 	@Autowired
 	public void setBallotQuestionDao(final BallotQuestionRepository repo){
 		this.ballotQuestionRepo = repo;
 	}
-	
 	@GET
 	public List<Vote> getAll() {
 		
 		return voteRepo.findAll();
 		
 	}
-	
+	@GET
+	@Path("/election/{electionid}") 
+	public List<VoteResult> getVotesForElection(@PathParam("electionid") Long electionId) {
+
+		List<Vote> votes = voteRepo.findAll();
+
+		//now for allVotes, we need to assign the question body and candidate name. 
+		List<VoteResult> voteResults = new ArrayList<>();
+
+		System.out.println("this many vote results: ");
+		System.out.println(votes.size());
+
+		for(Vote v: votes) {
+
+			VoteResult vr = new VoteResult();
+
+			String candidate = candidateRepo.findOne(v.getCandidateId()).getBody();
+			String question = questionRepo.findOne(v.getQuestionId()).getBody();
+
+			vr.setQuestion(question);
+			vr.setCandidate(candidate);
+			vr.setVoterId(v.getVoterId());
+			vr.setBallotId(v.getBallotId());
+			vr.setId(v.getId());
+			vr.setQuestionId(v.getQuestionId());
+			vr.setRank(v.getRank());
+
+			voteResults.add(vr);
+		}
+
+		System.out.println("vote results size: ");
+		System.out.println(voteResults.size());
+		
+		return voteResults;
+
+	}
+
 	@GET
 	@Path("/question/{questionid}")
 	public List<Vote> getVotesForQuestion(@PathParam("questionid") Long questionId) {
@@ -65,6 +109,7 @@ public class VoteService {
 	@GET
 	@Path("/ballot/{ballotid}")
 	public List<Vote> getVotesForBallot(@PathParam("ballotid") Long ballotId) {
+
 		List<BallotQuestion> ballotQuestions = ballotQuestionRepo.findByBallotId(ballotId); 
 		List<Vote> allVotes = new ArrayList<Vote>();
 		
@@ -73,8 +118,9 @@ public class VoteService {
 			List<Vote> votes = voteRepo.findByQuestionId(questionId);
 			allVotes.addAll(votes);
 		}
-		
+
 		return allVotes;
+
 	}
 	
 	@GET

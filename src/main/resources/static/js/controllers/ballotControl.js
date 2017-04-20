@@ -206,7 +206,7 @@ angular.module('voting')
 
 				if(response.data) {
 					console.log("votes that got cast: ", response.data);
-					//$location.path("/results"); 
+					$location.path("/results/1"); 
 				} else {
 					console.log("votes not cast.");
 
@@ -227,7 +227,19 @@ angular.module('voting')
 		};
 
 		$scope.logout = function () {
-			localStorage.removeItem("vwt");
+
+			var vwt = localStorage.getItem("vwt");
+
+			while(vwt !== null) {
+
+				localStorage.removeItem("vwt");
+
+				vwt = localStorage.getItem("vwt");
+
+			}
+
+			$location.path("/");
+			
 		};
 
 		$scope.goHome = function () {

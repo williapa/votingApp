@@ -52,7 +52,7 @@ angular.module('voting', ['ngRoute']).config(function($routeProvider,$locationPr
 		.when('/', homeConfig)
 		.when('/elections', electionConfig)
 		.when('/ballot/:id', ballotConfig)
-		.when('/results', resultsConfig);
+		.when('/results/:rid', resultsConfig);
 
 }).run(function($http) {
 	//attach the voting web token to every header so if they are logged in, we know!
@@ -62,20 +62,4 @@ angular.module('voting', ['ngRoute']).config(function($routeProvider,$locationPr
 
 	if(vwt !== null && vwt.password) $http.defaults.headers.common['Auth-Token'] = vwt.password;
 
-}).filter('norank', [function () {
-
-	return function (object) {
-
-        var array = [];
-
-        for(var i = 0; i < object.length; i++) {
-        	var candidate = object[i];
-        	if (candidate.rank === "0")
-                array.push(candidate);
-        }
-
-   		return array;
-
-   	};
-
-}]);
+});

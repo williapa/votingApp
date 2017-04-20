@@ -81,7 +81,25 @@
 	</script>
 	<script type="text/ng-template" id="results.html">
 		<div>
-			<h1> Results </h1>
+			<h1> Votes </h1>
+			<table>
+			<tr>
+			    <th>ID</th>
+			    <th>Question</th>
+			    <th>Candidate</th>
+			    <th>Voter ID</th>
+			    <th>Ballot ID</th>
+			    <th>Rank</th>
+			</tr>
+			<tr ng-repeat="vr in voteresults">
+			    <td> {{vr.id}} </td>
+			    <td> {{vr.question}} </td>
+			    <td> {{vr.candidate}} </td>
+			    <td> {{vr.voterId}} </td>
+			    <td> {{vr.ballotId}} </td>
+			    <td> {{vr.rank}} </td>
+			</tr>
+		</table>
 			<button ng-click="logout()" ng-class="{hide: !vwt}"> Log out </button>
 		</div>
 	</script>
