@@ -92,6 +92,7 @@ public class CandidateService {
 		saveCandidate(7L, "No - Sprinkles legal");
 		saveCandidate(8L, "Yes - Coconut illegal");
 		saveCandidate(8L, "No - Coconut legal");
+		System.out.println("candidates saved.");
 	}
 	
 	public void saveCandidate(Long questionId, String body) {

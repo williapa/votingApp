@@ -51,6 +51,8 @@ public class RegionService {
 			regionRepo.save(newRegion);
 			
 		}
+
+		System.out.println("regions saved.");
 	}
 
 }

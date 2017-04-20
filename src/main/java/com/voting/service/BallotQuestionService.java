@@ -114,6 +114,7 @@ public class BallotQuestionService {
 		saveBallotQuestion(5L, 2L);
 		saveBallotQuestion(5L, 3L);
 		saveBallotQuestion(5L, 8L);
+		System.out.println("ballot questions saved.");
 	}
 	
 	public void saveBallotQuestion(Long ballotId, Long questionId) {

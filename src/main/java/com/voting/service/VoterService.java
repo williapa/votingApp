@@ -124,6 +124,7 @@ public class VoterService{
 		saveVoter("Chad LeFountain", "password", 3L);
 		saveVoter("Jon Glenn", "password", 4L);
 		saveVoter("Roger Moore", "password", 5L);
+		System.out.println("voters saved.");
 	}
 	
 	public boolean saveVoter(String name, String password, Long regionId) {

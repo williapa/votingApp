@@ -16,17 +16,33 @@ public class Vote {
 	private Long candidateId;
 	private Long ballotId;
 	private Long electionId;
+	private Long rank;
+	private String writein;
 	
 	public Vote() {
 	}
 	
-	public Vote(Long id, Long voterId, Long questionId, Long candidateId, Long ballotId, Long electionId) {
+	public Vote(Long id, Long voterId, Long questionId, Long candidateId, Long ballotId, Long electionId, Long rank, String writein) {
 		this.id = id;
 		this.voterId = voterId;
 		this.questionId = questionId;
 		this.candidateId = candidateId;
 		this.ballotId = ballotId;
 		this.electionId = electionId;	
+		this.rank = rank;
+		this.writein = writein;
+	}
+	public void setWritein(String writein) {
+		this.writein = writein;
+	}
+	public String getWritein() {
+		return writein;
+	}
+	public void setRank(Long rank) {
+		this.rank = rank;
+	}
+	public Long getRank() {
+		return rank;
 	}
 	public Long getId() {
 		return id;

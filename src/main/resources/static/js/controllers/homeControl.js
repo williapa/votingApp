@@ -60,7 +60,7 @@ angular.module('voting')
 				} else {
 					$scope.error = "Name is already taken. ";
 				}
-			},function(error) {
+			}, function(error) {
 				console.log("there was an error: ", error);
 				$scope.error = error;
 			});

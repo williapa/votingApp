@@ -20,6 +20,10 @@ button {
 	margin-top: 8px;
 	margin-bottom: 8px;
 }
+.alert {
+	color: red;
+	text-align: center;
+}
 button:hover {
 	background: white;
 	color: #bf1224;
@@ -60,4 +64,16 @@ tr {
 	background-color: #efefef;
 	color: black;
 	border: 1px solid #cdcdcd;
+}
+
+.row {
+	display: flex;
+	flex-direction: row;
+	max-width: 800px;
+	justify-content: center;
+	align-items: center;
+}
+
+.row label {
+	margin-right: 16px;
 }

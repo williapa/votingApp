@@ -65,6 +65,8 @@ public class ElectionService{
 		} catch (ParseException e) {
             e.printStackTrace();
 		}
+
+		System.out.println("election saved.");
 		
 	}
 	

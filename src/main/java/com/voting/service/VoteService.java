@@ -89,8 +89,22 @@ public class VoteService {
 	public List<Vote> submitVote(List<Vote> vote) {
 		
 		List<Vote> successfulVotes = new ArrayList<>();
+
+		System.out.println("hello...");
+
+		System.out.println("votes size: ");
+		System.out.println(vote.size());
 		
+		//depending on type, save candidate and create / save votes
 		for(Vote v: vote) {
+
+			System.out.println("here is a vote: ");
+			System.out.println("voter id: "+v.getVoterId());
+			System.out.println("question id: "+v.getQuestionId());
+			System.out.println("candidate id: "+v.getCandidateId());
+			System.out.println("election id: "+v.getElectionId());
+			System.out.println("write in : "+v.getWritein());
+			System.out.println("rank: "+v.getRank());
 			
 			Long questionId = v.getQuestionId();
 			List<Vote> existingVotes = voteRepo.findByVoterId(v.getVoterId());
@@ -117,13 +131,47 @@ public class VoteService {
 				}
 				
 			}
-			
+
+			if(v.getCandidateId() == -1L) {
+
+				List<Candidate> candidatesWithSameName = candidateRepo.findByBody(v.getWritein());
+
+				Long existingCandidateId = -1L;
+
+				for(Candidate c: candidatesWithSameName) {
+
+					if(c.getQuestionId() == v.getQuestionId()) {
+						existingCandidateId = c.getId();
+					}
+
+				}
+				if(existingCandidateId > -1L) {
+
+					v.setCandidateId(existingCandidateId);
+
+				} else {
+
+					Candidate cand = new Candidate();
+
+					cand.setBody(v.getWritein());
+
+					cand.setQuestionId(v.getQuestionId());
+
+					Candidate saved = candidateRepo.save(cand);
+
+					v.setCandidateId(saved.getId());
+				}
+
+			} 
+
 			Candidate c = candidateRepo.findOne(v.getCandidateId());
 			
 			if(c != null) {
-		
-				successfulVotes.add(voteRepo.save(v));
-				
+
+				voteRepo.save(v);
+			
+				successfulVotes.add(v);
+					
 			}
 			
 		}

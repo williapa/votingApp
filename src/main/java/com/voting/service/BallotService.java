@@ -95,6 +95,8 @@ public class BallotService {
 			ballotRepo.save(newBallot);
 			
 		}
+
+		System.out.println("ballots saved.");
 		
 	}
 

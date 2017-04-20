@@ -82,6 +82,7 @@ public class QuestionService {
 		saveQuestion("Make Mint the Best Flavor", "yes or no");
 		saveQuestion("Make Sprinkles an Illegal Flavor", "yes or no");
 		saveQuestion("Make coconut an illegal topping", "yes or no");
+		System.out.println("questions saved.");
 	}
 	
 	

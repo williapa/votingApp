@@ -14,4 +14,6 @@ public interface CandidateRepository extends CrudRepository<Candidate, Long> {
 	
 	List<Candidate> findByQuestionId(Long id);
 
+	List<Candidate> findByBody(String body);
+
 }
