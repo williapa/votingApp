@@ -100,11 +100,11 @@ angular.module('voting')
 
 							var candidates = ans[questionIds[i]].candidates;	
 
-							for(var j = 0; j < candidates.length; j++) {
+							for(var a = 0; a < candidates.length; a++) {
 
-								if( candidates[j].id === key) {
+								if( candidates[a].id === keys[j]) {
 
-									v["writein"] = candidates[j].body;
+									v["writein"] = candidates[a].body;
 
 								}
 
@@ -124,7 +124,7 @@ angular.module('voting')
 
 					for(var k = 0; k < keys.length; k++) {
 
-						if(keys[j] !== "type") {
+						if(keys[k] !== "type") {
 
 							var vote = response[keys[k]];
 
@@ -134,19 +134,31 @@ angular.module('voting')
 
 							var v = null;
 
-							if(keys[j] === '-1') {
+							if(keys[k] == "-1") {
 
-								v = buildVote(questionIds[i], keys[j], "4");
+								var candidates = ans[questionIds[i]].candidates;
 
-							} else {
+								v = buildVote(questionIds[i], keys[k], "4");	
 
-								v = buildVote(questionIds[i], keys[j], keys[j]);
+								for(var s = 0; s < candidates.length; s++) {
 
-							}
+									if( candidates[s].id === keys[k]) {
 
-							votes.push(v);
+										v["writein"] = candidates[s].body;
+
+									}
+								}
+
+							} 
+
+
+						} else {
+
+							v = buildVote(questionIds[i], keys[k], keys[k]);
 
 						}
+
+						votes.push(v);
 
 					}
 
