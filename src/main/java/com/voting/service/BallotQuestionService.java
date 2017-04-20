@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import com.voting.domain.BallotQuestion;
 import com.voting.domain.Question;
 import com.voting.domain.VoterQuestion;
+import com.voting.domain.Candidate;
 import com.voting.repository.BallotQuestionRepository;
 import com.voting.repository.CandidateRepository;
 import com.voting.repository.QuestionRepository;
@@ -65,7 +66,15 @@ public class BallotQuestionService {
 			Question nextQuestion = questionRepo.findById(id.getQuestionId());
 			VoterQuestion vq = new VoterQuestion();
 			vq.setQ(nextQuestion);
-			vq.setCandidates(candidateRepo.findByQuestionId(id.getQuestionId()));
+			List<Candidate> cs = candidateRepo.findByQuestionId(id.getQuestionId());
+			List<Candidate> noWriteins =  new ArrayList<Candidate>();
+			for(int i = 0; i < cs.size(); i++) {
+				if(!cs.get(i).getWritein()) {
+					noWriteins.add(cs.get(i));
+				}
+			}
+			vq.setCandidates(noWriteins);
+
 			questions.add(vq);
 		}
 		return questions;

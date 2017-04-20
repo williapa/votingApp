@@ -133,7 +133,7 @@ public class VoterService{
 		Voter sameName = voterRepo.findByName(name); 
 		Region exists = regionRepo.findOne(regionId);
 		
-		if(exists != null) {
+		if(exists != null && sameName == null) {
 		
 			voter.setName(name);
 			voter.setPassword(password);

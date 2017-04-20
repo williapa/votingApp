@@ -5,20 +5,21 @@ angular.module('voting')
 		$scope.ballotId = $routeParams.id;
 		$scope.answers = {};
 		$scope.error = "";
+		var vwt = JSON.parse(localStorage.getItem("vwt"));
 
 		var buildVote = function(qid, cid, r) {
 
 			var vote = new Object();
 
-			var vwt = JSON.parse(localStorage.getItem("vwt"));
-
-			vote['voterId'] = vwt.id;
+			vote['voterId'] = parseInt(vwt.id);
 			vote['ballotId'] = parseInt($routeParams.id);
-			vote['questionId'] = qid;
-			vote['candidateId'] = cid;
-			vote['regionId'] = vwt.regionId;
+			vote['questionId'] = parseInt(qid);
+			vote['candidateId'] = parseInt(cid);
+			vote['regionId'] = parseInt(vwt.regionId);
 			vote['rank'] = parseInt(r);
 			vote['electionId'] = 1;
+
+			console.log("vote we just built: ", vote);
 
 			return vote;
 		}
@@ -27,15 +28,21 @@ angular.module('voting')
 			url: 'api/ballotquestion/forballot/'+$routeParams.id,
 			method: 'GET',
 		}).then(function(response) {
+
 			if(response.data){
+
 				console.log("questions for ballot id "+ $scope.ballotId  + ": ", response.data);
+
 				$scope.questions = response.data;
+
 				for(var i = 0; i < $scope.questions.length; i++) {
 
 					var q = $scope.questions[i];
 
 					if(q.q.type === "instant runoff" || q.q.type === "pick two") {
+
 						$scope.questions[i].candidates.push({id: -1, body: 'WRITE-IN', questionId: q.q.id});
+
 					}
 
 					var c = $scope.questions[i].candidates;
@@ -48,9 +55,13 @@ angular.module('voting')
 					}
 
 				}
+
 			} else {
+
 				console.log("no questions for this ballot yet. ");
+
 			}
+
 		}, function(error){
 			console.log("there was a server error?", error);
 		});
@@ -61,7 +72,7 @@ angular.module('voting')
 			var qs = $scope.questions;
 			var votes = [];
 
-			console.log("answers: ", ans);
+			var v = {};
 
 			//the keys for the answer object are the question Ids. 
 
@@ -71,11 +82,11 @@ angular.module('voting')
 
 				var response = ans[questionIds[i]];
 
-				console.log("response: ", response);
-
 				if(response.type === "yes or no") {
 
-					var v = buildVote(questionIds[i], response.id, "0");
+					v = buildVote(questionIds[i], response.id, "0");
+
+					console.log("yes or no vote to push: ", v);
 
 					votes.push(v);
 
@@ -85,11 +96,6 @@ angular.module('voting')
 
 					for(var j = 0; j < keys.length; j++){
 
-						console.log("pick two: ");
-						console.log("key: ", keys[j]);
-
-						var v = null;
-
 						if(keys[j] !== "type") {
 
 							v = buildVote(questionIds[i], keys[j], "0");
@@ -98,19 +104,33 @@ angular.module('voting')
 
 						if(keys[j] === "-1") {
 
-							var candidates = ans[questionIds[i]].candidates;	
+							var candidates = null;
 
-							for(var a = 0; a < candidates.length; a++) {
+							for(var n = 0; n < $scope.questions.length; n++) {
 
-								if( candidates[a].id === keys[j]) {
+								if(parseInt($scope.questions[n].q.id) === parseInt(questionIds[i])) {
 
-									v["writein"] = candidates[a].body;
+									candidates = $scope.questions[n].candidates;
 
 								}
 
-							} 
+							}
+
+							for(var s = 0; s < candidates.length; s++) {
+
+								console.log("compare: ",candidates[s]);
+								console.log("key: ", keys[j]);
+
+								if(parseInt(candidates[s].id) === parseInt(keys[j])) {
+
+									v["writein"] = candidates[s].body;
+
+								}
+							}
 
 						}
+
+						console.log("pick two vote to push: ", v);
 
 						if(keys[j] !== "type") votes.push(v);
 
@@ -128,21 +148,25 @@ angular.module('voting')
 
 							var vote = response[keys[k]];
 
-							console.log("response: ", response);
-
-							console.log("troublesome vote: ", vote);
-
-							var v = null;
-
 							if(keys[k] == "-1") {
 
-								var candidates = ans[questionIds[i]].candidates;
+								var candidates = null;
 
-								v = buildVote(questionIds[i], keys[k], "4");	
+								for(var n = 0; n < $scope.questions.length; n++) {
+
+									if(parseInt($scope.questions[n].q.id) === parseInt(questionIds[i])) {
+
+										candidates = $scope.questions[n].candidates;
+
+									}
+
+								}
+
+								v = buildVote(vote.questionId, keys[k], "4");	
 
 								for(var s = 0; s < candidates.length; s++) {
 
-									if( candidates[s].id === keys[k]) {
+									if(parseInt(candidates[s].id) === parseInt(keys[k])) {
 
 										v["writein"] = candidates[s].body;
 
@@ -151,14 +175,17 @@ angular.module('voting')
 
 							} 
 
+							else {
 
-						} else {
+								v = buildVote(questionIds[i], keys[k], keys[k]);
 
-							v = buildVote(questionIds[i], keys[k], keys[k]);
+							}
+
+							console.log("instant runoff vote to push: ", v);
+
+							votes.push(v);
 
 						}
-
-						votes.push(v);
 
 					}
 
@@ -191,80 +218,11 @@ angular.module('voting')
 
 		};
 
-
-
 		$scope.checkbox = function(candidate, qid) {
-
-/*			var candidates = [];
-
-			for(var i = 0; i < $scope.questions.length; i++) {
-
-				if ($scope.questions[i].q.id === qid) {
-
-					candidates = $scope.questions[i].candidates;
-
-				}
-
-			}
-			var candidateIndex = 0;
-
-			console.log("answers for the checkbox: ", $scope.answers[qid]);
-
-			for(var j = 0; j < candidates.length; j++) {
-
-				if( candidates[j].body === candidate.body) {
-					candidateIndex = j;
-				}
-
-			}
-
-			var checked = 0;
-
-			var keys = Object.keys($scope.answers[qid]);
-
-			for(var k = 0; keys.length; k++) {
-				var checkedBox = $scope.answers[qid][keys[k]];
-				console.log("im a big prince fan", checkedBox);
-
-				if($scope.answers[qid][keys[k]].checked) checked++;
-
-				if(checked > 2) {
-					$scope.alert = "too many checked boxes.";
-					$scope.answers[qid][keys[k]].checked = 0;
-				}
-
-			}*/
 
 		};
 
 		$scope.updateRunoff = function(r, x, id) {
-/*
-			var candidates = [];
-			var questionIndex = 0;
-
-			for(var i = 0; i < $scope.questions.length; i++) {
-
-				console.log("question id: ", $scope.questions[i].q.id);
-
-				if( $scope.questions[i].q.id === id) {
-					candidates = $scope.questions[i].candidates;
-					questionIndex = i;
-				}
-			}
-
-			candidates = $scope.questions[questionIndex].candidates;
-
-			for(var j = 0; j < candidates.length; j++) {
-
-				if(candidates.body === x) {
-					$scope.answers[questionIndex][candidates[j]] = {rank: r};
-				} else if ($scope.answers[questionIndex][candidates[j]].rank === r) {
-					$scope.answers[questionIndex][candidates[j]] = {rank: "0"};
-				}
-
-			}
-
-			console.log("scope.answers ", $scope.answers);*/
 
 		};
 

@@ -20,6 +20,7 @@
 	<script type="text/ng-template" id="home.html">
 		<div class="header">
 			<h1> Vote Online </h1>
+			<p class="error">{{error}}</p>
 			<button ng-click="toggle()"> <span ng-class="{hide: reg}"> log in </span> <span ng-class="{hide: !reg}"> register </span> </button>
 		</div>
 		<div ng-class="{hide: reg}">

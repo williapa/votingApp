@@ -4,6 +4,7 @@ angular.module('voting')
 		$scope.regions = ["Northeast", "Northwest", "Southeast", "Southwest", "Midwest"];
 		$scope.newVoter = {name: "", password: "", region: "Northeast"};
 		$scope.voter = {name: "", password: ""};
+		$scope.error = "";
 		$scope.reg = false;
 
 		$scope.toggle = function() {
@@ -63,6 +64,8 @@ angular.module('voting')
 			}, function(error) {
 				console.log("there was an error: ", error);
 				$scope.error = error;
+			}).finally(function() {
+				if(localStorage.getItem("vwt") !== null) $location.path("/elections");
 			});
 
 		};

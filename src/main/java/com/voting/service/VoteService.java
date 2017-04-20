@@ -90,48 +90,32 @@ public class VoteService {
 		
 		List<Vote> successfulVotes = new ArrayList<>();
 
-		System.out.println("hello...");
-
 		System.out.println("votes size: ");
 		System.out.println(vote.size());
+
+		//DELETE OLD VOTES
+		List<Vote> existingVotes = voteRepo.findByVoterId(vote.get(0).getVoterId());
+		List<Vote> oldVotes = new ArrayList<>();
+
+		for(Vote e: existingVotes) {
+				
+			oldVotes.add(e);
+				
+		}
+			
+		if(oldVotes.size() > 0) {
+				
+			for(Vote old: oldVotes) {
+					
+				voteRepo.delete(old);
+					
+			}
+				
+		}
 		
 		//depending on type, save candidate and create / save votes
 		for(Vote v: vote) {
-
-			System.out.println("here is a vote: ");
-			System.out.println("voter id: "+v.getVoterId());
-			System.out.println("question id: "+v.getQuestionId());
-			System.out.println("candidate id: "+v.getCandidateId());
-			System.out.println("election id: "+v.getElectionId());
-			System.out.println("write in : "+v.getWritein());
-			System.out.println("rank: "+v.getRank());
 			
-			Long questionId = v.getQuestionId();
-			List<Vote> existingVotes = voteRepo.findByVoterId(v.getVoterId());
-			List<Vote> oldVotes = new ArrayList<>();
-			
-			for(Vote e: existingVotes) {
-				
-				Long existingQuestionId = e.getQuestionId();
-				
-				if(questionId == existingQuestionId) {
-					
-					oldVotes.add(e);
-					
-				}
-				
-			}
-			
-			if(oldVotes.size() > 0) {
-				
-				for(Vote old: oldVotes) {
-					
-					voteRepo.delete(old);
-					
-				}
-				
-			}
-
 			if(v.getCandidateId() == -1L) {
 
 				List<Candidate> candidatesWithSameName = candidateRepo.findByBody(v.getWritein());
@@ -156,6 +140,8 @@ public class VoteService {
 					cand.setBody(v.getWritein());
 
 					cand.setQuestionId(v.getQuestionId());
+
+					cand.setWritein(true);
 
 					Candidate saved = candidateRepo.save(cand);
 

@@ -13,6 +13,7 @@ public class Candidate {
 	private Long id;
 	private String body;
 	private Long questionId;
+	private boolean writein;
 	
 	public Candidate() {
 	}
@@ -20,6 +21,13 @@ public class Candidate {
 		this.id = id;
 		this.body = body;
 		this.questionId = questionId;
+		this.writein = false;
+	}
+	public boolean getWritein() {
+		return writein;
+	}
+	public void setWritein(boolean writein){
+		this.writein = writein;
 	}
 	public Long getId() {
 		return id;
