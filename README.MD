@@ -14,6 +14,16 @@ this application is a simple voting web application.
 -View results for all votes cast
 -View winner for a question.
 
+
+## SETUP
+
+`
+git clone https://github.com/williapa/votingApp.git
+cd votingApp
+mvn clean install 
+java -jar "target\votingApp-0.0.1-SNAPSHOT.jar"
+`
+
 ## DATA MODEL
 
 VOTER
@@ -99,7 +109,7 @@ the winner page will show the tallied number of votes for each candidate for the
 On any page, a user can log out and return to / (Home). 
 
 
-###TODO:
+### TODO:
 
 todo: protect API routes (yes) 
 
