@@ -1,8 +1,8 @@
-#VOTING WEB APP:
+# VOTING WEB APP:
 
 this application is a simple voting web application.
 
-##HIGH LEVEL FEATURES:
+## HIGH LEVEL FEATURES:
 
 -Register voters
 -Sign in a voter
@@ -14,7 +14,7 @@ this application is a simple voting web application.
 -View results for all votes cast
 -View winner for a question.
 
-#DATA MODEL
+## DATA MODEL
 
 VOTER
 long id (pk)
@@ -65,7 +65,7 @@ long regionId (fk)
 long electionId (fk)
 
 
-SUMMARY OF TECHNOLOGIES USED: 
+## SUMMARY OF TECHNOLOGIES USED: 
 
 This is a spring boot application, serving a single jsp that is the basis for our angular application. The spring backend will use the spring data jpa "CrudRepository" interface to connect to an in memory H2 SQL database (sql implementation in java). This will enable us to annotate our domain objects as entities with ids, and our database is automatically created. We can use the h2 console in development to query our tables using sql with a friendly interface to debug or view raw data. Later, through simple application properties, we can configure a jdbc database connection to a persistent option.
 
@@ -77,7 +77,7 @@ Security: votes cannot be submitted without a saved Voter Web Token. the voter w
 
 Votes are always anonymous. in the database, an id is connected with the vote to ensure a limit of votes per question per voter. However, at no point will the application show a cast vote associated with any voter identification. 
 
-###ROUTES: 
+## ROUTES: 
 
 / (home)
 login and register. Successful submission links to 
