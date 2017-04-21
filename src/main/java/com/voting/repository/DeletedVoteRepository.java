@@ -4,18 +4,12 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.voting.domain.Vote;
+import com.voting.domain.DeletedVote;
 
-public interface DeletedVoteRepository extends CrudRepository<Vote, Long> {
+public interface DeletedVoteRepository extends CrudRepository<DeletedVote, Long> {
 	
-	List<Vote> findAll();
+	List<DeletedVote> findAll();
 	
-	List<Vote> findByVoterId(Long voterId);
-	
-	List<Vote> findByQuestionId(Long questionId);
-
-	List<Vote> findByCandidateId(Long candidateId);
-	
-	Vote findOne(Long id);
+	DeletedVote findOne(Long id);
 
 }

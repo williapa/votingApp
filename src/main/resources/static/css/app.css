@@ -9,6 +9,7 @@ body, ng-view {
 	height: 100%;
 	align-items: center;
 	justify-content: space-between;
+	overflow-x:hidden;
 }
 button {
 	background: #2196F3;
@@ -158,7 +159,7 @@ input:checked + .slider:before {
 }
 .username {
 	position: absolute;
-	top: 8px;
+	top: 12px;
 	left: 32px;
 	font-size: 1em;
 	color: #888;

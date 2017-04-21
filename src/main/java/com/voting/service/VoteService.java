@@ -19,6 +19,7 @@ import com.voting.repository.QuestionRepository;
 import com.voting.repository.CandidateRepository;
 import com.voting.repository.VoteRepository;
 import com.voting.repository.DeletedVoteRepository;
+import com.voting.repository.ElectionRepository;
 import com.voting.domain.*;
 
 @Component
@@ -34,6 +35,12 @@ public class VoteService {
 	private BallotRepository ballotRepo;
 	private QuestionRepository questionRepo;
 	private DeletedVoteRepository deletedVoteRepo;
+	private ElectionRepository electionRepo;
+
+	@Autowired
+	public void setElectionDao(final ElectionRepository repo) {
+		this.electionRepo = repo;
+	}
 
 	@Autowired
 	public void setDeletedVoteDao(final DeletedVoteRepository repo) {
@@ -189,11 +196,29 @@ public class VoteService {
 		System.out.println("votes size: ");
 		System.out.println(vote.size());
 
+		//CHECK REQUEST HEADER, RETURN NULL IF AUTH TOKEN DOESNT MATCH VOTER ID
+
+		//RETURN NULL IF WE ARE OUTSIDE OF THE ELECTION WINDOW
+		if(vote.size() > 0) {
+			Vote v = vote.get(0);
+			Election e = electionRepo.findOne(v.getElectionId());
+
+			Date currentTime = new Date();
+			Date electionStart = e.getStartDate();
+			Date electionEnd = e.getEndDate();
+
+			if(currentTime.compareTo(electionStart) < 0 || currentTime.compareTo(electionEnd) > 0) {
+				System.out.println("election is over or has not started.");
+				return successfulVotes;
+			}
+
+		}
+
 		//DELETE OLD VOTES
 		List<Vote> existingVotes = voteRepo.findByVoterId(vote.get(0).getVoterId());
 		List<Vote> oldVotes = new ArrayList<>();
 
-		for(Vote e: existingVotes) {
+		for(Vote e : existingVotes) {
 				
 			oldVotes.add(e);
 				
@@ -201,17 +226,19 @@ public class VoteService {
 			
 		if(oldVotes.size() > 0) {
 				
-			for(Vote old: oldVotes) {
+			for(Vote old : oldVotes) {
 					
 				voteRepo.delete(old);
 
-				deletedVoteRepo.save(old);
+				DeletedVote dv = new DeletedVote(old);
+
+				deletedVoteRepo.save(dv);
 					
 			}
 				
 		}
 		
-		//depending on type, save candidate and create / save votes
+		//depending on the vote's question type, save candidate and create / save votes
 		for(Vote v: vote) {
 			
 			if(v.getCandidateId() == -1L) {
@@ -253,6 +280,8 @@ public class VoteService {
 			if(c != null) {
 
 				System.out.println("candidate name: " + c.getBody());
+
+				v.setCast(new Date());
 
 				voteRepo.save(v);
 			

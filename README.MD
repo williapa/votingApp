@@ -114,17 +114,16 @@ the winner page will show the tallied number of votes for each candidate for the
 
 On any page, a user can log out and return to / (Home). 
 
-
 ### TODO:
 
-todo: protect API routes (yes) 
+todo: protect API routes (FIRST) 
 
-todo: create results API that returns # of votes per candidate for each question in that election (yes) 
+todo: finish results API that returns # of votes per candidate for pick two and instant runoff (SECOND)
 
-todo: enforce data for posted votes
+todo: add date to vote (done)
 
-todo: add date to vote
+todo: winner (html done) 
 
-todo: winner 
+todo: enforce data for posted votes (not started)
 
-todo: junit & nightwatch tests
+todo: junit & nightwatch tests (not started) 

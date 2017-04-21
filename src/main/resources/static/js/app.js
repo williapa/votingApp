@@ -48,11 +48,17 @@ angular.module('voting', ['ngRoute']).config(function($routeProvider,$locationPr
 		templateUrl: 'results.html',
 	};
 
+	var winnerConfig = {
+		controller: 'winnerControl',
+		templateUrl: 'winner.html',
+	}
+
 	$routeProvider
 		.when('/', homeConfig)
 		.when('/elections', electionConfig)
 		.when('/ballot/:id', ballotConfig)
-		.when('/results/:rid', resultsConfig);
+		.when('/results/:rid', resultsConfig)
+		.when('/winner/:qid', winnerConfig);
 
 }).run(function($http) {
 	//attach the voting web token to every header so if they are logged in, we know!

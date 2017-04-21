@@ -9,6 +9,8 @@ import com.voting.domain.Vote;
 public interface VoteRepository extends CrudRepository<Vote, Long> {
 	
 	List<Vote> findAll();
+
+	void delete(Vote v);
 	
 	List<Vote> findByVoterId(Long voterId);
 	

@@ -74,7 +74,7 @@ public class QuestionService {
 	
 	@PostConstruct
 	public void saveQuestions() {
-		saveQuestion("Commnder in Cream", "instant runoff");
+		saveQuestion("Commander in Cream", "instant runoff");
 		saveQuestion("Chief Dairy Queen", "yes or no");
 		saveQuestion("State Rep. District M&M", "pick two");
 		saveQuestion("Make Vanilla best flavor", "yes or no");

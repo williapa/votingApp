@@ -8,7 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Vote {
+public class DeletedVote {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,11 +21,25 @@ public class Vote {
 	private Long rank;
 	private String writein;
 	private Date cast;
+	private Date deleted;
 	
-	public Vote() {
+	public DeletedVote() {
+	}
+
+	public DeletedVote(Vote v) {
+		this.id = v.getId();
+		this.voterId = v.getVoterId();
+		this.questionId = v.getQuestionId();
+		this.candidateId = v.getCandidateId();
+		this.ballotId = v.getBallotId();
+		this.electionId = v.getElectionId();
+		this.rank = v.getRank();
+		this.writein = v.getWritein();
+		this.cast = v.getCast();
+		this.deleted = new Date();
 	}
 	
-	public Vote(Long id, Long voterId, Long questionId, Long candidateId, Long ballotId, Long electionId, Long rank, String writein, Date cast) {
+	public DeletedVote(Long id, Long voterId, Long questionId, Long candidateId, Long ballotId, Long electionId, Long rank, String writein, Date cast, Date deleted) {
 		this.id = id;
 		this.voterId = voterId;
 		this.questionId = questionId;
@@ -35,12 +49,19 @@ public class Vote {
 		this.rank = rank;
 		this.writein = writein;
 		this.cast = cast;
+		this.deleted = deleted;
 	}
 	public void setCast(Date cast) {
 		this.cast = cast;
 	}
 	public Date getCast() {
 		return cast;
+	}
+	public void setDeleted(Date deleted) {
+		this.deleted = deleted;
+	}
+	public Date getDeleted() {
+		return deleted;
 	}
 	public void setWritein(String writein) {
 		this.writein = writein;

@@ -14,7 +14,8 @@
 	<script type="text/javascript" src="js/controllers/homeControl.js"></script>
 	<script type="text/javascript" src="js/controllers/electionControl.js"></script>
 	<script type="text/javascript" src="js/controllers/ballotControl.js"></script>
-		<script type="text/javascript" src="js/controllers/resultsControl.js"></script>
+	<script type="text/javascript" src="js/controllers/resultsControl.js"></script>
+	<script type="text/javascript" src="js/controllers/winnerControl.js"></script>
 	<body ng-app="voting">
 	<ng-view />
 
@@ -110,7 +111,7 @@
 			<div class="header">
 				<p class="username" ng-class="{hide: !loggedin}">  {{ username }} </p>		
 				<h1> Votes </h1>
-				<button ng-class="{hide: !vwt}" class="logout" ng-click="logout()"> logout </button>
+				<button ng-class="{hide: !loggedin}" class="logout" ng-click="logout()"> logout </button>
 			</div>
 			<table>
 			<tr>
@@ -119,7 +120,7 @@
 			    <th>Candidate</th>
 			    <th>Rank</th>
 			</tr>
-			<tr ng-repeat="vr in voteresults">
+			<tr ng-repeat="vr in voteresults" ng-click="winner(vr.questionId)">
 			    <td> {{vr.id}} </td>
 			    <td> {{vr.question}} </td>
 			    <td> {{vr.candidate}} </td>
@@ -130,10 +131,10 @@
 	</script>
 
 
-	<script type="text/ng-template" id="questionresult.html">
+	<script type="text/ng-template" id="winner.html">
 		<div class="header">
 			<p class="username" ng-class="{hide: !loggedin}">  {{ username }} </p>	
-			<button ng-class="{hide: !vwt}" class="logout" ng-click="logout()"> logout </button>
+			<button ng-class="{hide: !loggedin}" class="logout" ng-click="logout()"> logout </button>
 			<h1> {{ question }}  </h1>
 		</div>
 		<table>
@@ -146,6 +147,7 @@
 				<td> {{c.id }} </td>
 			</tr>
 		</table>
+		<p> winner: {{ winner }} </p>
 		<p> total votes: {{totalvotes}} </p>
 		<p> winning percentage: {{ winningpercentage }} </p>
 	</script>

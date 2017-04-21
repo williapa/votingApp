@@ -18,18 +18,22 @@ angular.module('voting')
 			console.log(error);
 		});
 
-		$scope.vwt = false;
-		var token = localStorage.getItem("vwt");
+		var vwt = localStorage.getItem("vwt");
+		$scope.username = "";
+		$scope.loggedin = false;
 
-		if(token) {
-			$scope.vwt = true;
+		if(vwt !== null) {
+
+			$scope.loggedin = true;
+
+			$scope.username = JSON.parse(vwt).name;
 		}
 
-		$scope.results 
+		$scope.winner = function(qid) {
+			$location.path("/winner/"+qid);
+		}
 
 		$scope.logout = function () {
-
-			var vwt = localStorage.getItem("vwt");
 
 			while(vwt !== null) {
 
