@@ -19,8 +19,14 @@ this application is a simple voting web application.
 
 `
 git clone https://github.com/williapa/votingApp.git
+`
+`
 cd votingApp
+`
+`
 mvn clean install 
+`
+`
 java -jar "target\votingApp-0.0.1-SNAPSHOT.jar"
 `
 
