@@ -61,7 +61,7 @@ tr th {
 	background-color: black;
 	color: white;
 }
-th {
+th, td {
 	padding: 8px;
 }
 tr {
@@ -82,8 +82,8 @@ tr {
 	margin-right: 16px;
 }
 h2 span {
-	color: #cdcdcd;
-	margin-left: 12px;
+	color: #9a9a9a;
+	margin-left: 8px;
 }
 .blue {
 	color: #2196F3;
@@ -157,7 +157,7 @@ input:checked + .slider:before {
 	margin-bottom: 16px;
 }
 .username {
-	position: fixed;
+	position: absolute;
 	top: 8px;
 	left: 32px;
 	font-size: 1em;
@@ -165,7 +165,7 @@ input:checked + .slider:before {
 }
 
 .logout {
-	position: fixed;
+	position: absolute;
 	top: 8px;
 	right: 32px;
 	margin-top: 10px;

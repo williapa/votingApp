@@ -82,7 +82,7 @@ Votes are always anonymous. in the database, an id is connected with the vote to
 / (home)
 login and register. Successful submission links to 
 
-/election
+/elections
 view upcoming elections. if logged in, clicking a row links to your ballot based on your region. Else, skips to results
 
 /ballot/{id}

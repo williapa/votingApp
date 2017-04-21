@@ -7,7 +7,7 @@ angular.module('voting')
 		$scope.username = "";
 		$scope.loggedin = false;
 
-		if(vwt.length > 0) {
+		if(vwt !== null) {
 
 			$scope.loggedin = true;
 
