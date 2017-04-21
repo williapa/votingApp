@@ -17,12 +17,23 @@
 		<script type="text/javascript" src="js/controllers/resultsControl.js"></script>
 	<body ng-app="voting">
 	<ng-view />
+
+
 	<script type="text/ng-template" id="home.html">
 		<div class="header">
 			<h1> Vote Online </h1>
 			<p class="error">{{error}}</p>
-			<button ng-click="toggle()"> <span ng-class="{hide: reg}"> log in </span> <span ng-class="{hide: !reg}"> register </span> </button>
+			<div class="row">			
+			<span class="gray"> Sign In </span>
+			<label class="switch" >
+  				<input type="checkbox">
+  				<div ng-click="toggle()" class="slider round"></div>
+  				</input>
+			</label>			
+			<span class="blue"> Register </span>
+			</div>
 		</div>
+		<div class="register">
 		<div ng-class="{hide: reg}">
 			<h2> Register to Vote </h2>
 			<label> Full Name </label> <input type="text" ng-model="newVoter.name"/>
@@ -37,9 +48,16 @@
 			<label> Password </label> <input type="password" ng-model="voter.password"/>
 			<button ng-click="login()"> log in </button>
 		</div>
+		</div>
 	</script>
+
+
 	<script type="text/ng-template" id="election.html">
-		<h1> Elections </h1>
+		<div class="header">
+			<h1> Elections </h1>
+			<p class="username" ng-class="{hide: !loggedin}">  {{ username }} </p>
+			<button ng-class="{hide: !loggedin}" class="logout" ng-click="logout()"> logout </button>
+		</div>
 		<p class="error" ng-model="error">{{error}} </p>
 		<table>
 			<tr>
@@ -53,15 +71,21 @@
 			    <td> {{e.endDate}} </td>
 			</tr>
 		</table>
-		<button ng-click="logout()"> logout </button>
+
 	</script>
+
+
 	<script type="text/ng-template" id="ballot.html">
-		<h1> Ballot #{{ballotId}} </h1>
+		<div class="header">
+			<p class="username" ng-class="{hide: !loggedin}">{{ username }} </p>		
+			<h1> Ballot #{{ballotId}} </h1>
+			<button ng-class="{hide: !loggedin}" class="logout" ng-click="logout()"> logout </button>
+		</div>
 		<div class="ballot">
 			<p class="error">{{error}}</p>
 			<div class="question" ng-repeat="q in questions">
-				<h2>#{{q.q.id + ". " + q.q.body }} </h2>
-				<p> {{q.q.type }} </p>
+				<h2>#{{q.q.id + ". " + q.q.body }} <span> {{q.q.type }} </span> </h2>
+				
 				<div class="row" ng-repeat="c in q.candidates">
 					<label ng-show="q.q.type === 'yes or no'">{{c.body}}</label>
 					<input ng-value="c.id" ng-model="answers[q.q.id]['id']" type="radio" ng-show="q.q.type === 'yes or no'" />
@@ -74,34 +98,58 @@
 					<label> Write-in Candidate name: </label>
 					<input class="writein" ng-model="q.candidates[q.candidates.length-1].body" type="text" />
 				</div>
-				<hr/>
+				<hr></hr>
 			</div>
 			<button ng-click="vote()"> Submit your ballot </button>
 		</div>
 	</script>
+
+
 	<script type="text/ng-template" id="results.html">
 		<div>
-			<h1> Votes </h1>
+			<div class="header">
+				<p class="username" ng-class="{hide: !loggedin}">  {{ username }} </p>		
+				<h1> Votes </h1>
+				<button ng-class="{hide: !vwt}" class="logout" ng-click="logout()"> logout </button>
+			</div>
 			<table>
 			<tr>
 			    <th>ID</th>
 			    <th>Question</th>
 			    <th>Candidate</th>
-			    <th>Voter ID</th>
-			    <th>Ballot ID</th>
 			    <th>Rank</th>
 			</tr>
 			<tr ng-repeat="vr in voteresults">
 			    <td> {{vr.id}} </td>
 			    <td> {{vr.question}} </td>
 			    <td> {{vr.candidate}} </td>
-			    <td> {{vr.voterId}} </td>
-			    <td> {{vr.ballotId}} </td>
 			    <td> {{vr.rank}} </td>
 			</tr>
 		</table>
-			<button ng-click="logout()" ng-class="{hide: !vwt}"> Log out </button>
 		</div>
 	</script>
-	</body>
-	</html>
+
+
+	<script type="text/ng-template" id="questionresult.html">
+		<div class="header">
+			<p class="username" ng-class="{hide: !loggedin}">  {{ username }} </p>	
+			<button ng-class="{hide: !vwt}" class="logout" ng-click="logout()"> logout </button>
+			<h1> {{ question }}  </h1>
+		</div>
+		<table>
+			<tr>
+				<th> Candidate </th>
+				<th> Votes </th>
+			</tr>
+			<tr ng-repeat="c in candidates">
+				<td> {{c.body }}</td>
+				<td> {{c.id }} </td>
+			</tr>
+		</table>
+		<p> total votes: {{totalvotes}} </p>
+		<p> winning percentage: {{ winningpercentage }} </p>
+	</script>
+
+
+</body>
+</html>

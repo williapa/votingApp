@@ -6,6 +6,15 @@ angular.module('voting')
 		$scope.answers = {};
 		$scope.error = "";
 		var vwt = JSON.parse(localStorage.getItem("vwt"));
+		$scope.username = "";
+		$scope.loggedin = false;
+
+		if(vwt !== null && vwt.name.length > 0) {
+
+			$scope.loggedin = true;
+
+			$scope.username = vwt.name;
+		}
 
 		var buildVote = function(qid, cid, r) {
 
@@ -20,6 +29,10 @@ angular.module('voting')
 			vote['electionId'] = 1;
 
 			console.log("vote we just built: ", vote);
+
+			if(isNaN(cid)) {
+				return null;
+			}
 
 			return vote;
 		}
@@ -88,7 +101,7 @@ angular.module('voting')
 
 					console.log("yes or no vote to push: ", v);
 
-					votes.push(v);
+					if(v !== null) votes.push(v);
 
 				} else if(response.type === "pick two") {
 
@@ -132,7 +145,7 @@ angular.module('voting')
 
 						console.log("pick two vote to push: ", v);
 
-						if(keys[j] !== "type") votes.push(v);
+						if(keys[j] !== "type" && v !== null) votes.push(v);
 
 					}
 
@@ -183,7 +196,7 @@ angular.module('voting')
 
 							console.log("instant runoff vote to push: ", v);
 
-							votes.push(v);
+							if(v !== null) votes.push(v);
 
 						}
 

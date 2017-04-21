@@ -12,12 +12,11 @@ public class VoteResult {
 	
 	public VoteResult() {
 	}
-	public VoteResult(Long id, String question, Long questionId, String candidate, Long voterId, Long ballotId, Long rank) {
+	public VoteResult(Long id, String question, Long questionId, String candidate, Long ballotId, Long rank) {
 		this.id = id;
 		this.question = question;
 		this.questionId = questionId;
 		this.candidate = candidate;
-		this.voterId = voterId;
 		this.ballotId = ballotId;
 		this.rank = rank;
 	}
@@ -50,12 +49,6 @@ public class VoteResult {
 	}
 	public String getCandidate() {
 		return candidate;
-	}
-	public Long getVoterId() {
-		return voterId;
-	}
-	public void setVoterId(Long voterId) {
-		this.voterId = voterId;
 	}
 	public Long getRank() {
 		return rank;

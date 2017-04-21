@@ -23,7 +23,7 @@ public class WebTokenEncryption {
 	
 	public WebTokenEncryption() throws Exception {
 		
-		encryptionKey = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUV=="; //really long
+		encryptionKey = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUV=="; 
 		encryptionScheme = DESEDE_ENCRYPTION_SCHEME;
 		arrayBytes = encryptionKey.getBytes(UNICODE_FORMAT);
 		ks = new DESedeKeySpec(arrayBytes);
@@ -33,6 +33,7 @@ public class WebTokenEncryption {
 		
 	}
 	
+	//encrypt voter Id, store as password in token 
 	public String encrypt(String unencrypted) {
 		
 		String encryptedString = null;
@@ -50,6 +51,7 @@ public class WebTokenEncryption {
 	
 	}
 	
+	//decrypt auth token into voter Id (if successful);
 	public String decrypt(String encrypted) {
 		
 		String decrypted = null;

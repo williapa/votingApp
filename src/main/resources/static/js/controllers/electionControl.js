@@ -3,6 +3,17 @@ angular.module('voting')
 			
 		$scope.elections = [];
 
+		var vwt = localStorage.getItem("vwt");
+		$scope.username = "";
+		$scope.loggedin = false;
+
+		if(vwt.length > 0) {
+
+			$scope.loggedin = true;
+
+			$scope.username = JSON.parse(vwt).name;
+		}
+
 		$http({
 			url: '/api/election/',
 			method: 'GET',			

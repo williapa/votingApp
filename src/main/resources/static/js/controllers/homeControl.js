@@ -5,7 +5,7 @@ angular.module('voting')
 		$scope.newVoter = {name: "", password: "", region: "Northeast"};
 		$scope.voter = {name: "", password: ""};
 		$scope.error = "";
-		$scope.reg = false;
+		$scope.reg = true;
 
 		$scope.toggle = function() {
 			$scope.reg = !$scope.reg;

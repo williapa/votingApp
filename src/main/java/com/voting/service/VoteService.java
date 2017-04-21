@@ -1,7 +1,6 @@
 package com.voting.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,6 +18,7 @@ import com.voting.repository.BallotRepository;
 import com.voting.repository.QuestionRepository;
 import com.voting.repository.CandidateRepository;
 import com.voting.repository.VoteRepository;
+import com.voting.repository.DeletedVoteRepository;
 import com.voting.domain.*;
 
 @Component
@@ -33,6 +33,12 @@ public class VoteService {
 	private BallotQuestionRepository ballotQuestionRepo;
 	private BallotRepository ballotRepo;
 	private QuestionRepository questionRepo;
+	private DeletedVoteRepository deletedVoteRepo;
+
+	@Autowired
+	public void setDeletedVoteDao(final DeletedVoteRepository repo) {
+		this.deletedVoteRepo = repo;
+	}
 
 	@Autowired
 	public void setQuestionDao(final QuestionRepository repo) {
@@ -82,7 +88,6 @@ public class VoteService {
 
 			vr.setQuestion(question);
 			vr.setCandidate(candidate);
-			vr.setVoterId(v.getVoterId());
 			vr.setBallotId(v.getBallotId());
 			vr.setId(v.getId());
 			vr.setQuestionId(v.getQuestionId());
@@ -99,11 +104,56 @@ public class VoteService {
 	}
 
 	@GET
-	@Path("/question/{questionid}")
-	public List<Vote> getVotesForQuestion(@PathParam("questionid") Long questionId) {
+	@Path("/question/winner/{questionid}")
+	public List<Candidate> getWinnerForQuestion(@PathParam("questionid") String questionid) {
+
+		System.out.println("hello get winner for question: "+ questionid);
+
+		Long questionId = Long.parseLong(questionid);
+
+		System.out.println("long question id: "+ questionId);
 		
-		return voteRepo.findByQuestionId(questionId);
-		
+		List<Vote> questionVotes = voteRepo.findByQuestionId(questionId);
+		Question q = questionRepo.findOne(questionId);
+		List<Candidate> winningCandidates = new ArrayList<>();
+
+		System.out.println("question: "+ q.getBody());
+		System.out.println("question type: "+q.getType());
+		System.out.println("length: "+ questionVotes.size());
+
+		if(questionVotes.isEmpty()) {
+			return null;
+		}
+
+		if(q.getType().equals("yes or no")) {
+
+			Map<Long, Long> votes = new HashMap<Long, Long>();
+
+			for(Vote v : questionVotes) {
+
+				if(votes.containsKey(v.getCandidateId())) {
+					Long val = votes.get(v.getCandidateId());
+					val = val + 1L;
+					votes.put(v.getCandidateId(), val);
+				} else {
+
+					votes.put(v.getCandidateId(), 1L);
+
+				}
+
+			}
+
+			for (Long key : votes.keySet()) {
+				Candidate kand = candidateRepo.findOne(key);
+				kand.setId(votes.get(key));
+				winningCandidates.add(kand);
+			}
+
+			return winningCandidates;
+		}
+
+		return winningCandidates;
+
 	}
 	
 	@GET
@@ -154,6 +204,8 @@ public class VoteService {
 			for(Vote old: oldVotes) {
 					
 				voteRepo.delete(old);
+
+				deletedVoteRepo.save(old);
 					
 			}
 				
@@ -199,6 +251,8 @@ public class VoteService {
 			Candidate c = candidateRepo.findOne(v.getCandidateId());
 			
 			if(c != null) {
+
+				System.out.println("candidate name: " + c.getBody());
 
 				voteRepo.save(v);
 			

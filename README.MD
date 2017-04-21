@@ -1,90 +1,114 @@
-VOTING WEB APP:
+#VOTING WEB APP:
 
-this application is a voting web application.
+this application is a simple voting web application.
 
-features:
+##HIGH LEVEL FEATURES:
 
-register and log in a voter (using JWT)
-(id name password region)
+-Register voters
+-Sign in a voter
+-View upcoming elections
+-Automatically assigned ballot with questions for your regional location
+-Submit a ballot, with the option to resubmit multiple times (does not duplicate vote)
+-Ballots can contain 3 types of question: yes or no, pick two, and instant runoff.
+-For pick two and instant runoff, voters may submit a write in candidate.
+-View results for all votes cast
+-View winner for a question.
 
-view upcoming elections 
-(election id, election date)
+#DATA MODEL
 
-find the appropriate ballot (with polls you are eligible to participate in)
-(a ballot has an election id, a ballot id, regionId, and the poll question ids that it contains);
+VOTER
+long id (pk)
+string name (unique)
+string password 
+long regionId (fk)
 
-submit poll answers
-(a poll question contains a poll id, a question string, an answer string)
+VOTE
+long id (pk)
+long candidateId(fk)
+long questionId(fk)
+long ballotId(fk)
+long voterId (fk)
+long electionId (fk)
+long rank (default 0, only used for instant runoff votes)
+String writein (optional, only used for writen candidates)
 
-options table:
-(int optionId, string optionValue, fk pollId)
+DELETEDVOTE
+(same as vote, but for votes that were overwritten)
 
-region table
-(regionId, region name);
+REGION
+long id (pk)
+String region
 
-votes table
-(voter Id, pollId, string optionValue)
+BALLOTQUESTION
+long id (pk)
+long ballotId (fk)
+long questionId (fk)
 
-view poll results for old, active and future polls. 
+QUESTION
+long id (pk)
+String body 
+String type 
 
-Types of Poll questions:
+ELECTION
+long id (pk)
+date startDate 
+date endDate
 
-ranked list: give candidates a ranking, can rank 0 to all of the candidates
+CANDIDATE
+long id (pk)
+String body
+long questionId (fk)
 
-yes or no: 0 or 1
+BALLOT
+long id (pk)
+long regionId (fk)
+long electionId (fk)
 
-multiple choice: choose one of many options, with possibility to write in. A write-in must create a row in the options table if it is unique. 
 
-HOW TO RUN:
+SUMMARY OF TECHNOLOGIES USED: 
 
-git clone https://github.com/williapa/voting.git
+This is a spring boot application, serving a single jsp that is the basis for our angular application. The spring backend will use the spring data jpa "CrudRepository" interface to connect to an in memory H2 SQL database (sql implementation in java). This will enable us to annotate our domain objects as entities with ids, and our database is automatically created. We can use the h2 console in development to query our tables using sql with a friendly interface to debug or view raw data. Later, through simple application properties, we can configure a jdbc database connection to a persistent option.
 
-in root of project, run:
+Our Service classes will use JERSEY REST to expose our crud repository data as json, enforcing some business logic (you can use the annotation to enforce different types of key relationships, such as many to one, one to many, etc. for this example, I used a simpler approach, making sure each table had a unique ID.) The angular SPA will request this data via ajax and then suitably present any data.
 
-	mvn clean install 
+Each Jersey service class has an annoted method @postconstruct which runs following the creation of the database tables. In this class, I generate the initial data for the application, which includes some users, 5 different regions and 5 different ballots, each with 3 shared nation questions and a unique regional question. Questions are associated to multiple ballots via a lookup table BallotQuestion. Elections specify start and end dates. The application will only allow votes posted between these dates. Note that while the application does not currently allow for an admin role to post new questions, candidates, ballot questions, etc, most of the api routes are implemented.
 
-then, check the console output for the location of the .jar file. To start the server, run:
+Security: votes cannot be submitted without a saved Voter Web Token. the voter web token is saved in local storage upon successful signin or registration. This is a custom implementation, more mature approaches use a 2-token system, one which is used to enforce a timeout of the main token.  Our angular application will look for this token and attach the unique encrypted identifier in the token, generated from a value that is not exposed to users, to each request header. When votes are posted to the server, the server decrypts the request header and verifies that it corresponds with the voter Id for the submitted votes. All other routes are not protected. A user who is not logged in will be shown the results page instead of a ballot. 
 
-	java -jar "C:\path\to\voting\target\votingApp-0.0.1-SNAPSHOT.jar"
+Votes are always anonymous. in the database, an id is connected with the vote to ensure a limit of votes per question per voter. However, at no point will the application show a cast vote associated with any voter identification. 
 
-In eclipse, you can also right click the Application.java class and select "Run spring boot app" or "Run java application".
+###ROUTES: 
 
-All data is transferred via json through the /api/ routes. localhost:8080/ serves the single html page for the application. Using ng-route, we will make it so that different routes serve different views, but the only transferred HTML file is the index.html.
-
-Database: currenty the application uses an in-memory H2 database. This allows for rapid development. When it is time to switch to a more permanent solution, you can easily change the jdbc driver url and connect to a standalone database of any kind. 
-
-To run SQL for the in memory database (Eventually there will be an init.sql to populate with test data), you can go to localhost:8080/h2-console/ and click "connect" with the default options. This is a good way to monitor the database during development.
-
-/login - > /elections - > /ballots - > /questions -> /results (admin page if admin)
-
-/login 
-
-login form (this is the header on every page, if you are logged in, you have a jwt in local storage and it will populate the header)
+/ (home)
+login and register. Successful submission links to 
 
 /election
+view upcoming elections. if logged in, clicking a row links to your ballot based on your region. Else, skips to results
 
-landing page. links to every election page
+/ballot/{id}
+redirected to results if no voter web token. Ballot displayed based on provided ballot id, in order 
+to show regional questions. After voting, the user is directed to 
 
-/ballots
+/results/{electionid}
+results page contains every vote cast, listed by vote id (arbitrary index), question name, candidate name, and rank. A ledger of votes, we can extend this page to tally results.
+clicking a question name will link to 
 
-every ballot for that election also listing region and ballotId
+/winner/{questionid}
+the winner page will show the tallied number of votes for each candidate for the question, listed from greatest to least. 
 
-/questions
+On any page, a user can log out and return to / (Home). 
 
-every question for that ballot with the question body, candidate options, question type. Everyone can still view this, it only requires your /login JWT
-to be able to cast a ballot (meaning: post your list of votes to the votes table)
 
-/results
+###TODO:
 
-shows the number of votes for each poll question, regardless of region. also has a link for every table's "get" and "create", use the current index.html 
-as reference for /results but requiring admin jwt. 
+todo: protect API routes (yes) 
 
-todo: enforce vote limits with ng-change or and/or on server
+todo: create results API that returns # of votes per candidate for each question in that election (yes) 
 
-todo: protect API routes
+todo: enforce data for posted votes
 
-todo: create results api that returns # of votes per candidate for each question in that electino.
+todo: add date to vote
 
-todo: figure out how to do runoff question. 
+todo: winner 
 
-todo: show logged in name, links for results
+todo: junit & nightwatch tests
