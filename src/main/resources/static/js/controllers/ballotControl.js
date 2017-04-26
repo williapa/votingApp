@@ -6,6 +6,7 @@ angular.module('voting')
 		$scope.answers = {};
 		$scope.error = "";
 		var vwt = JSON.parse(localStorage.getItem("vwt"));
+		$http.defaults.headers.common['Auth-Token'] = vwt.password;
 		$scope.username = "";
 		$scope.loggedin = false;
 
@@ -131,9 +132,6 @@ angular.module('voting')
 
 							for(var s = 0; s < candidates.length; s++) {
 
-								console.log("compare: ",candidates[s]);
-								console.log("key: ", keys[j]);
-
 								if(parseInt(candidates[s].id) === parseInt(keys[j])) {
 
 									v["writein"] = candidates[s].body;
@@ -154,6 +152,13 @@ angular.module('voting')
 					var keys = Object.keys(response);
 
 					//the keys are spots 1, 2, 3, and 4 
+					for(var r = 0; r < keys.length; r++) {
+
+						if(keys[r] == "type") {
+							 keys.splice(r, 1);
+						}
+
+					}
 
 					for(var k = 0; k < keys.length; k++) {
 
@@ -175,22 +180,29 @@ angular.module('voting')
 
 								}
 
-								v = buildVote(vote.questionId, keys[k], "4");	
+								v = buildVote(vote.questionId, vote.id, (k+1));	
 
-								for(var s = 0; s < candidates.length; s++) {
+								v["writein"] = vote.body;
 
-									if(parseInt(candidates[s].id) === parseInt(keys[k])) {
+								/*for(var s = 0; s < candidates.length; s++) {
+
+									if(parseInt(candidates[s].id) === -1) {
 
 										v["writein"] = candidates[s].body;
 
 									}
-								}
+
+								}*/
 
 							} 
 
 							else {
 
-								v = buildVote(questionIds[i], keys[k], keys[k]);
+								v = buildVote(questionIds[i], vote.id, (k+1));
+
+								if(vote.id === -1) {
+									v["writein"] = vote.body;
+								}
 
 							}
 
@@ -210,6 +222,8 @@ angular.module('voting')
 			//let's assume our ng-change functions will enforce our logic of separate ranks
 			//for each runoff candidate and only two votes cast for the pick two. 
 			console.log("we are sending them the votes: ", votes);
+			//update header
+
 
 			$http({
 				url:'api/vote',

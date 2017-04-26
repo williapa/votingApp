@@ -62,7 +62,7 @@ public class VoterService{
 			Voter v = voterRepo.findByName(voter.getName());
 			v.setPassword(crypt.encrypt(Long.toString(v.getId())));
 
-			return voter;
+			return v;
 
 		}
 

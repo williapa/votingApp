@@ -26,10 +26,23 @@ angular.module('voting')
 
 			}
 
-			max/total;
 			$scope.winner = c[ind].body;
 			$scope.totalvotes = c[ind].id;
 			$scope.winningpercentage = parseFloat(max / total * 100) + "%";
+
+			var maxes = 0;
+
+			for(var j = 0; j < c.length; j++) {
+
+				if(c[j].id  === max) {
+					maxes++;
+				}
+
+			}
+
+			if(maxes > 1) {
+				$scope.winner = "TIE";
+			}
 
 		};
 
@@ -53,7 +66,7 @@ angular.module('voting')
 			method: 'GET',
 		}).then(function(response) {
 			if(response.data){
-				$scope.question = response.data.body;
+				$scope.question = response.data;
 			} else {
 				$scope.question = "ERROR";
 			}

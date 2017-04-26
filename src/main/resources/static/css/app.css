@@ -172,7 +172,7 @@ input:checked + .slider:before {
 	margin-top: 10px;
 }
 hr {
-	margin: 12px 0;
+	margin: 18px 0;
 	width: 70%;
     border: .5px solid #ccc;
 }
