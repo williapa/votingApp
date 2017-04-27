@@ -115,13 +115,13 @@ public class VoterService{
 		saveVoter("Phil Ivey", "password", 4L);
 		saveVoter("Crocodile Dundee", "password", 5L);
 		saveVoter("Leo Pena", "password", 1L);
-		saveVoter("Ronald Grump", "password", 2L);
+		saveVoter("Ronald McDonald", "password", 2L);
 		saveVoter("Todd Glass", "password", 3L);
 		saveVoter("Scott Aukerman", "password", 4L);
 		saveVoter("Armie Hammer", "password", 5L);
 		saveVoter("Jeff Stern", "password", 1L);
 		saveVoter("Quentin Tarantino", "password", 2L);
-		saveVoter("Chad LeFountain", "password", 3L);
+		saveVoter("Chad Boston", "password", 3L);
 		saveVoter("Jon Glenn", "password", 4L);
 		saveVoter("Roger Moore", "password", 5L);
 		System.out.println("voters saved.");

@@ -143,7 +143,7 @@ angular.module('voting')
 
 						console.log("pick two vote to push: ", v);
 
-						if(keys[j] !== "type" && v !== null) votes.push(v);
+						if(keys[j] !== "type" && v !== null && response[keys[j]] === true) votes.push(v);
 
 					}
 
@@ -245,11 +245,48 @@ angular.module('voting')
 
 		};
 
-		$scope.checkbox = function(candidate, qid) {
+		$scope.checkbox = function(c, q) {
+
+			var checked = 0;
+
+			var k = Object.keys($scope.answers[q]);
+
+			for(var i = 0; i < k.length; i++) {
+
+				if($scope.answers[q][k[i]] === true) {
+
+					checked = checked + 1;
+
+				}
+
+			}
+
+			console.log("checked: ", checked);
+
+			if(checked > 2) {
+				$scope.answers[q][c] = false;
+			}
 
 		};
 
-		$scope.updateRunoff = function(r, x, id) {
+		$scope.updateRunoff = function(index, qid) {
+
+			var justselected = $scope.answers[qid][index].body;
+
+			var keys = Object.keys($scope.answers[qid]);
+
+
+			for(var i = 0; i < keys.length; i++){
+
+				if(keys[i] != index && $scope.answers[qid][keys[i]].body === justselected) {
+
+					delete $scope.answers[qid][index];
+
+					return;
+
+				}
+
+			}
 
 		};
 

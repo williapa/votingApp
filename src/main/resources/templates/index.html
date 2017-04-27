@@ -91,9 +91,9 @@
 					<label ng-show="q.q.type === 'yes or no'">{{c.body}}</label>
 					<input ng-value="c.id" ng-model="answers[q.q.id]['id']" type="radio" ng-show="q.q.type === 'yes or no'" />
 					<label ng-show="q.q.type==='pick two'">{{c.body}}</label>
-					<input value="true" type="checkbox" ng-model="answers[q.q.id][c.id]" ng-change="checkbox(c, q.q.id)" ng-show="q.q.type === 'pick two'"/>
+					<input value="true" type="checkbox" ng-model="answers[q.q.id][c.id]" ng-change="checkbox(c.id,q.q.id)" ng-show="q.q.type === 'pick two'"/>
 					<label ng-show="q.q.type === 'instant runoff'"> choice {{q.candidates.indexOf(c) + 1}} </label>
-					<select ng-value="q.candidates.indexOf(c)+1" ng-model="answers[q.q.id][$index]" ng-options="x.body for x in q.candidates" ng-show="q.q.type === 'instant runoff'"/>
+					<select ng-value="$index" ng-model="answers[q.q.id][$index]" ng-options="x.body for x in q.candidates" ng-change="updateRunoff($index, q.q.id)" ng-show="q.q.type === 'instant runoff'"/>
 				</div>
 				<div class="row" ng-show="q.q.type === 'pick two' || q.q.type === 'instant runoff'">
 					<label> Write-in Candidate name: </label>

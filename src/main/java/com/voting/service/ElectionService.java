@@ -57,7 +57,7 @@ public class ElectionService{
 		try {
 			
 			Date startDate = dateformat.parse("12/04/2017");
-			Date endDate = dateformat.parse("26/04/2017");
+			Date endDate = dateformat.parse("30/04/2017");
 			only.setStartDate(startDate);
 			only.setEndDate(endDate);
 			electionRepo.save(only);
